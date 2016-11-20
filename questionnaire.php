@@ -1,19 +1,19 @@
 <?php 
 
 include_once "header.php";
+include_once "connexion.php";
 
 // on crée la requête SQL 
-$sql = 'SELECT nom,prenom,statut,date FROM famille_tbl'; 
+$resultat = $mysqli->query ("SELECT * FROM questionnaire");
 
 // on envoie la requête 
-$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
-
+//$req = mysql_query($sql) or die('Erreur SQL !<br>'.$sql.'<br>'.mysql_error()); 
+die($resultat);
 // on fait une boucle qui va faire un tour pour chaque enregistrement 
-while($data = mysql_fetch_assoc($req)) 
+foreach($resultat as $data) 
     { 
     // on affiche les informations de l'enregistrement en cours 
-    echo '<b>'.$data['nom'].' '.$data['prenom'].'</b> ('.$data['statut'].')'; 
-    echo ' <i>date de naissance : '.$data['date'].'</i><br>'; 
+    echo '<b>'.$data['id_question'].' '.$data['question'].'</b>'; 
     } 
 
 // on ferme la connexion à mysql 
