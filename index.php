@@ -40,12 +40,27 @@ if ($mysqli->connect_error) {
 			</div>
 		</div>
 	</div>
-	<div class="row" style="margin-top:10%">
+	<div class="row" style="margin-top:8%">
 		<div class="col-md-6">			 
 			<button type="button" class="btn btn-info btn-block btn-lg"><a href="http://localhost/questionnaire/creation.php" style="color:white;">Ajouter une question</a></button>
 		</div>
 		<div class="col-md-6">
-			<button type="button" class="btn btn-block btn-info btn-lg"><a href="http://localhost/questionnaire/questionnaire.php" style="color:white;">Questionnaire</a></button>
+			<form action="questionnaire.php" method="POST">
+				<input type="submit" value="Questionnaire" class="btn btn-block btn-info btn-lg"></input>
+				<?php
+
+				$BaseDeDonnees = Utilitaire::Connexion();
+
+				$module = $BaseDeDonnees->query('SELECT id_module, module FROM modules');
+
+				while ($donnees = $module->fetch())
+				{
+					echo '<input type="checkbox" name="module[]" value="'.$donnees['id_module'].'">'.$donnees['module'].'<br>';
+				}	
+
+				?>
+			</form>
 		</div>
 	</div>
 </div>
+

@@ -1,28 +1,30 @@
 <?php 
  
-$serveur = "localhost";
-$base = "auxiliairepuericultrice";
-$user = "AP";
-$pass = "AP2016";
-
-/*
-$mysqli est une nouvelle instance de la classe mysqli
-prédéfinie dans php et hérite donc de ses propriétés et méthodes
-connexion à la base de données
-*/
-$mysqli = new mysqli($serveur, $user, $pass, $base);
-// si la connexion se fait en UTF-8, sinon ne rien indiquer
-$mysqli->set_charset("utf8");
-/*
-utilisation de la méthode connect_error
-qui renvoie un message d'erreur si la connexion échoue
-*/
-if ($mysqli->connect_error) {
-    die('Erreur de connexion ('.$mysqli->connect_errno.')'. $mysqli->connect_error);
+abstract class Utilitaire{
+	/**
+	 * [Permet de se connecter à la base de données]
+	 */
+	public function Connexion(){
+		try
+		{
+			// Requête permettant la connection à la base de données MySQL (nom de BDD, identifiant Mysql, Mot De Passe Mysql)
+			return $BaseDeDonnees = new PDO('mysql:host=localhost;dbname=auxiliairepuericultrice', 'AP', 'AP2016');
+		}
+		catch(Exception $erreur)
+		{
+			// En cas d'erreur, on affiche un message
+			echo 'Impossible de se connecter à la base de données<br/>';
+			die('Erreur : '.$erreur->getMessage());
+			exit();
+		}
+	}
+	/**
+	 * [Permet la deconnexion d'un utilisateur]
+	 */
+	public function Deconnexion(){
+		// Détruit toutes les variables d'une session
+		session_unset(); 
+		// Redirection vers la page index.php
+		header('Location:index.php'); 
+	}
 }
-
-if ($mysqli->connect_error) {
-    echo 'connexion impossible... :'.$mysqli->connect_error;
-}
-
-?>
