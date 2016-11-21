@@ -3,21 +3,39 @@
 include_once "header.php";
 include_once "connexion.php";
 
-$module='';
+$BaseDeDonnees = Utilitaire::Connexion();
 $NumeroModule='';
-foreach($_POST['module'] as $valeur)
-{
-   $module .= 'modules.id_module = '.$valeur.' OR ';
-   $NumeroModule .= ' - '.$valeur;
-}
 
-// nombre de caractères à supprimer
-$nombre_debut=0;
-$nombre_fin=4;
-// calcul de la longueur de la chaine
-$longueur_chaine=strlen($module);
-// écriture de la chaine avec suppression des caractères en question
-$modules = substr($module, $nombre_debut, $longueur_chaine-$nombre_fin);
+if( !isset($_POST['module']) )
+{	   
+	$module = $BaseDeDonnees->query('SELECT id_module FROM modules');
+
+	while ($donnees = $module->fetch())
+	{
+		$NumeroModule .= $donnees['id_module'].'- ';
+	}
+
+	$modules='';
+}
+else
+{
+	$module ='WHERE ';
+	
+	foreach($_POST['module'] as $valeur)
+	{
+	   $module .= 'modules.id_module = '.$valeur.' OR ';
+	   $NumeroModule .= ' - '.$valeur;
+	}
+
+	// nombre de caractères à supprimer
+	$nombre_debut=0;
+	$nombre_fin=4;
+	// calcul de la longueur de la chaine
+	$longueur_chaine=strlen($module);
+	// écriture de la chaine avec suppression des caractères en question
+	$modules = substr($module, $nombre_debut, $longueur_chaine-$nombre_fin);
+
+}
 
 echo '<div class="container-fluid">
 	<div class="row">
@@ -31,9 +49,7 @@ echo '<div class="container-fluid">
 		<div class="col-md-12">
 		<form>';	
 
-	$BaseDeDonnees = Utilitaire::Connexion();
-
-	$question = $BaseDeDonnees->query('SELECT id_question, question, module, questionnaire.id_module FROM questionnaire INNER JOIN modules ON questionnaire.id_module = modules.id_module WHERE '.$modules.'');
+	$question = $BaseDeDonnees->query('SELECT id_question, question, module, questionnaire.id_module FROM questionnaire INNER JOIN modules ON questionnaire.id_module = modules.id_module '.$modules.'');
 	$val=1;
 
 	while ($donnees = $question->fetch())
@@ -67,16 +83,11 @@ echo '<div class="container-fluid">
 							// vide
 						break;
 					}
-
-
-
 				}	
-
-
+				
 			echo '</h4>
 				</div>
-				<div class="list-group-item">				
-				</div> <a class="list-group-item active">resultat</a>
+				<a class="list-group-item active" style="display: none;">resultat</a>
 			</div>';
 		$val++;
 	}
