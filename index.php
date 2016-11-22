@@ -55,7 +55,7 @@ if ($mysqli->connect_error) {
 
 				while ($donnees = $module->fetch())
 				{
-					echo '<input type="checkbox" name="module[]" value="'.$donnees['id_module'].'">'.$donnees['module'].'<br>';
+					echo '<input type="checkbox" class="form-control" name="module[]" value="'.$donnees['id_module'].'">'.$donnees['module'].'<br>';
 				}	
 
 				?>

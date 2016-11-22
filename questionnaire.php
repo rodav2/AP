@@ -1,20 +1,15 @@
 <?php 
-
 include_once "header.php";
 include_once "connexion.php";
-
 $BaseDeDonnees = Utilitaire::Connexion();
 $NumeroModule='';
-
 if( !isset($_POST['module']) )
 {	   
 	$module = $BaseDeDonnees->query('SELECT id_module FROM modules');
-
 	while ($donnees = $module->fetch())
 	{
 		$NumeroModule .= $donnees['id_module'].'- ';
 	}
-
 	$modules='';
 }
 else
@@ -26,7 +21,6 @@ else
 	   $module .= 'modules.id_module = '.$valeur.' OR ';
 	   $NumeroModule .= ' - '.$valeur;
 	}
-
 	// nombre de caractères à supprimer
 	$nombre_debut=0;
 	$nombre_fin=4;
@@ -34,9 +28,7 @@ else
 	$longueur_chaine=strlen($module);
 	// écriture de la chaine avec suppression des caractères en question
 	$modules = substr($module, $nombre_debut, $longueur_chaine-$nombre_fin);
-
 }
-
 echo '<div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
@@ -48,10 +40,8 @@ echo '<div class="container-fluid">
 		</div>
 		<div class="col-md-12">
 		<form>';	
-
 	$question = $BaseDeDonnees->query('SELECT id_question, question, module, questionnaire.id_module FROM questionnaire INNER JOIN modules ON questionnaire.id_module = modules.id_module '.$modules.'');
 	$val=1;
-
 	while ($donnees = $question->fetch())
 	{
 			echo '<div class="page-header">
@@ -63,12 +53,9 @@ echo '<div class="container-fluid">
 				 <a href="#" class="list-group-item active"><h4>'. $donnees['question'].'</h4></a>
 				<div class="list-group-item">
 					<h4 class="list-group-item-heading">';
-
 				$reponses = $BaseDeDonnees->query('SELECT id_question, reponse, type FROM reponse where id_question = '.$donnees['id_question'].'');
-
 				while ($reponse = $reponses->fetch())
 				{
-
 					switch($reponse['type']){
 						case 'radio':
 							echo '<input type="radio" name="reponse[]" value="'.$reponse['id_question'].'">'.$reponse['reponse'].'<br>';
@@ -91,7 +78,6 @@ echo '<div class="container-fluid">
 			</div>';
 		$val++;
 	}
-
 	?>
 			<input type="submit" value="Résultat" class="btn btn-block btn-success btn-lg"></input>
 			</form>
