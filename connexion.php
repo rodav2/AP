@@ -1,6 +1,6 @@
 <?php 
  
-abstract class Utilitaire{
+abstract class ConnexionBDD{
 	/**
 	 * [Permet de se connecter à la base de données]
 	 */
@@ -27,4 +27,5 @@ abstract class Utilitaire{
 		// Redirection vers la page index.php
 		header('Location:index.php'); 
 	}
+
 }

@@ -1,9 +1,25 @@
 <?php 
 include_once "header.php";
 include_once "connexion.php";
+include_once "Utilitaire.php";
 
-foreach ($_POST['radio'] AS $val) {
-	echo $val;
+
+
+if( isset($_POST['creationquestioncheckbox']) )
+{
+	var_dump($_POST['text_reponse']);
+	$result = Utilitaire::creationQuestion( $_POST['text_question'] , $_POST['module'], $_POST['text_reponse'], $_POST['checkbox']);	
+
+	echo $result['id_question'];
+
+}
+
+
+
+if( isset($_POST['creationmodule']) )
+{
+	$result = Utilitaire::creationModule( $_POST['newmodule'] );	
+	echo $result;
 }
 
 
@@ -30,10 +46,17 @@ foreach ($_POST['radio'] AS $val) {
 							<a href="#complet">reponse a compléter</a>
 						</li>
 					</ul>
-				</div>	
+					<form class="navbar-form navbar-left" action="" method="post">
+						<div class="form-group">
+							<input type="text" class="form-control" name="newmodule" placeholder="Nom du module..."/>
+						</div> 
+						<input type="submit" class="btn btn-success" name="creationmodule" value="Créer le nouveau module"></input>
+					</form>
+				</div>
+
 			</nav>
 
-			<form action="" method="post">
+			<form action="creation.php" method="post">
 				<div class="col-md-4">
 					<h2 class="text-center">Choix multiple</h2><br/>
 					<p id="multiple">
@@ -44,18 +67,35 @@ foreach ($_POST['radio'] AS $val) {
 											<div class="col-md-12">
 												<div class="form-group">
 													<label>Question :</label>
-													<input type="text" class="form-control"/><br/>
-
-												
-														<div class="col-md-10" style="padding-right: 0;padding-left: 0;">
-															<label class="reponse">Reponse :</label>
-															<input type="text" class="form-control" name="checkbox"/>
-														</div>
-														<div class="col-md-2" style="top: 22px;">
-															<input type="checkbox" class="form-control" id="checkbox" name="checkbox"/>
-														</div>
+													<input type="text" class="form-control" name="text_question"/><br/>												
 													
-													<button class="btn btn-default ajouterReponse checkbox" data="checkbox">Ajouter une réponse</button><button type="submit" class="btn btn-default pull-right" style="margin-top:10px">Enregistrer</button>
+													<div class="col-md-10" style="padding-right: 0;padding-left: 0;">
+														<label class="reponse">Reponse :</label>
+														<input type="text" class="form-control" name="text_reponse[]"/>
+													</div>
+													<div class="col-md-2" style="top: 22px;">
+														<input type="checkbox" class="form-control" id="checkbox" name="checkbox"/>
+													</div>
+													
+													<button class="btn btn-info ajouterReponse checkbox" data="checkbox">Ajouter une réponse</button>
+
+													<select name="Module" class="btn btn-default pull-right" style="margin-top: 10px;height: 35px;">
+														<option value="Module" selected="selected" disabled="disabled">Module</option>
+														<?php
+
+														$BaseDeDonnees = ConnexionBDD::Connexion();
+
+														$module = $BaseDeDonnees->query('SELECT id_module, module FROM modules');
+
+														while ($donnees = $module->fetch())
+														{
+															echo ' <option value="'.$donnees['id_module'].'">'.$donnees['module'].'</option>';
+
+														}	
+
+														?>
+													</select>
+													<input type="submit" class="btn btn-success pull-right col-md-12" style="margin-top:10px" value="Enregistrer" name="creationquestioncheckbox"></input>
 												</div>
 											</div>	
 									</form>
@@ -85,7 +125,24 @@ foreach ($_POST['radio'] AS $val) {
 													<div class="col-md-2" style="top: 22px;">
 														<input type="radio" class="form-control" id="radio" name="radio" checked="checked"/>
 													</div>
-												<button class="btn btn-default ajouterReponse radio" data="radio" >Ajouter une réponse</button><button type="submit" class="btn btn-default pull-right" style="margin-top:10px">Enregistrer</button>
+												<button class="btn btn-info ajouterReponse radio" data="radio" >Ajouter une réponse</button>
+												<select name="Module" class="btn btn-default pull-right" style="margin-top: 10px;height: 35px;">
+														<option value="Module" selected="selected" disabled="disabled">Module</option>
+													<?php
+
+													$BaseDeDonnees = ConnexionBDD::Connexion();
+
+													$module = $BaseDeDonnees->query('SELECT id_module, module FROM modules');
+
+													while ($donnees = $module->fetch())
+													{
+														echo ' <option value="'.$donnees['id_module'].'">'.$donnees['module'].'</option>';
+
+													}	
+
+													?>
+												</select>
+												<input type="submit" class="btn btn-success pull-right col-md-12" style="margin-top:10px" value="Enregistrer" name="creationquestionradius"></input>
 											</div>
 										</div>
 									</form>
@@ -111,7 +168,24 @@ foreach ($_POST['radio'] AS $val) {
 												
 												<label class="reponse">Reponse :</label>
 												<input type="text" class="form-control" style="height: 60px;" name="text"/>
-												<button type="submit" class="btn btn-default pull-right" style="margin-top:10px">Enregistrer</button>
+												
+												<select name="Module" class="btn btn-default pull-right" style="margin-top: 10px;height: 35px;">
+														<option value="Module" selected="selected" disabled="disabled">Module</option>
+													<?php
+
+													$BaseDeDonnees = ConnexionBDD::Connexion();
+
+													$module = $BaseDeDonnees->query('SELECT id_module, module FROM modules');
+
+													while ($donnees = $module->fetch())
+													{
+														echo ' <option value="'.$donnees['id_module'].'">'.$donnees['module'].'</option>';
+
+													}	
+
+													?>
+												</select>
+												<input type="submit" class="btn btn-success pull-right col-md-12" style="margin-top:10px" value="Enregistrer" name="creationquestiontext"></input>
 											</div>
 										</div>	
 									</form>
@@ -140,11 +214,11 @@ $(document).ready(function() {
         	switch(dataelement){
         		case 'checkbox':
         			var element = $('.checkbox');
-           			$(element).before('<div class="col-md-12" style="padding-right: 0;padding-left: 0;"><div class="col-md-10" style="padding-right: 0;padding-left: 0;"><label class="reponse">Reponse :</label><a href="#" class="remove_field">(Supprimer)</a><input type="text" class="form-control" /></div><div class="col-md-2" style="top: 22px;"><input type="checkbox" class="form-control" id="checkbox" name="checkbox[]"/></div></div>'); 
+           			$(element).before('<div class="col-md-12" style="padding-right: 0;padding-left: 0;"><div class="col-md-10" style="padding-right: 0;padding-left: 0;"><label class="reponse">Reponse :</label><a href="#" class="remove_field" style="color:red">(Supprimer)</a><input type="text" class="form-control" name="text_reponse[]"/></div><div class="col-md-2" style="top: 22px;"><input type="checkbox" class="form-control" id="checkbox" name="checkbox[]"/></div></div>'); 
         			break;
         		case 'radio':
         			var element = $('.radio');
-        			$(element).before('<div class="col-md-12" style="padding-right: 0;padding-left: 0;"><div class="col-md-10" style="padding-right: 0;padding-left: 0;"><label class="reponse">Reponse :</label><a href="#" class="remove_field">(Supprimer)</a><input type="text" class="form-control" /></div><div class="col-md-2" style="top: 22px;"><input type="radio" class="form-control" id="radio" name="radio"/></div></div>'); 
+        			$(element).before('<div class="col-md-12" style="padding-right: 0;padding-left: 0;"><div class="col-md-10" style="padding-right: 0;padding-left: 0;"><label class="reponse">Reponse :</label><a href="#" class="remove_field" style="color:red">(Supprimer)</a><input type="text" class="form-control" /></div><div class="col-md-2" style="top: 22px;"><input type="radio" class="form-control" id="radio" name="radio"/></div></div>'); 
         			break;							
         	}
     });

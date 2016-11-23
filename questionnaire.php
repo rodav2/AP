@@ -1,8 +1,10 @@
 <?php 
 include_once "header.php";
 include_once "connexion.php";
-$BaseDeDonnees = Utilitaire::Connexion();
+
+$BaseDeDonnees = ConnexionBDD::Connexion();
 $NumeroModule='';
+
 if( !isset($_POST['module']) )
 {	   
 	$module = $BaseDeDonnees->query('SELECT id_module FROM modules');
@@ -29,6 +31,7 @@ else
 	// écriture de la chaine avec suppression des caractères en question
 	$modules = substr($module, $nombre_debut, $longueur_chaine-$nombre_fin);
 }
+
 echo '<div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">

@@ -49,7 +49,7 @@ if ($mysqli->connect_error) {
 				<input type="submit" value="Questionnaire" class="btn btn-block btn-info btn-lg"></input>
 				<?php
 
-				$BaseDeDonnees = Utilitaire::Connexion();
+				$BaseDeDonnees = ConnexionBDD::Connexion();
 
 				$module = $BaseDeDonnees->query('SELECT id_module, module FROM modules');
 
